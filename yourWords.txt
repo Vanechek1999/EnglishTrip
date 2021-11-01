@@ -1,0 +1,25 @@
+{
+                "english": "yesterday",
+                "russian": "вчера"
+            };{
+                "english": "yes",
+                "russian": "да"
+            };{
+                "english": "think",
+                "russian": "думать"
+            };{
+                "english": "they",
+                "russian": "они"
+            };{
+                "english": "woman",
+                "russian": "женщина"
+            };{
+                "english": "window",
+                "russian": "окно"
+            };{
+                "english": "war",
+                "russian": "война"
+            };{
+                "english": "use",
+                "russian": "использовать"
+            };

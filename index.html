@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.8.0/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <!-- <div class="cursor"></div>
+    <div class="cursor2"></div> -->
+    <canvas id="canvas"></canvas>
+    <svg class="line" width="779" height="1163" viewBox="0 0 779 1163" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path class="line1" d="M1266.26 799.736C1158.6 975.133 901.119 1145.13 737.191 1000.42C585.204 866.253 734.872 778.351 632.037 617.251C529.203 456.151 276.704 559.611 198.286 372.686C152.77 264.189 201.144 123.6 330.609 41.031C460.074 -41.5382 670.629 -66.0876 949.474 57.4959C1212.88 174.234 1307.71 334.321 1328.87 477.959C1350.04 621.597 1297.54 748.788 1266.26 799.736Z" stroke="url(#Line0)" stroke-width="2" stroke-miterlimit="10"></path>
+        <path class="line2" d="M950.898 77.3529C1192.65 184.07 1280.73 330.702 1300.95 462.846C1320.83 594.147 1273.63 710.801 1244.9 758.786C1146.59 921.797 909.364 1080.09 755.29 951.077C613.025 831.958 743.842 751.1 648.111 603.51C645.372 599.318 642.528 595.312 639.585 591.482C559.921 487.699 407.197 513.974 312.469 447.499C286.754 429.453 265.196 404.685 250.642 368.786C208.778 265.526 254.628 135.641 374.809 60.0494C495.67 -15.7801 691.943 -36.6899 950.898 77.3529Z" stroke="url(#Line1)" stroke-width="2" stroke-miterlimit="10"></path>
+        <path class="line3" d="M952.322 97.2103C1172.42 193.906 1253.75 327.084 1273.03 447.734C1291.62 566.696 1249.88 672.9 1223.54 717.835C1135.08 868.757 917.652 1015.05 773.387 901.733C640.885 797.659 753.276 723.54 664.183 589.769C661.616 585.913 658.93 582.24 656.172 578.711C581.78 483.335 443.536 502.334 358.562 438.712C335.36 421.34 315.91 398.033 302.997 364.884C264.805 266.84 308.111 147.68 419.01 79.0656C531.266 9.97763 713.256 -7.29214 952.322 97.2103Z" stroke="url(#Line2)" stroke-width="2" stroke-miterlimit="10"></path>
+        <path class="line4" d="M953.747 117.068C1152.19 203.743 1227.08 323.416 1245.11 432.623C1262.71 539.197 1226.04 634.947 1202.18 676.886C1123.29 815.535 925.997 950.01 791.485 852.389C668.801 763.354 762.44 696.148 680.256 576.028C677.852 572.516 675.333 569.169 672.759 565.942C603.638 478.972 479.878 490.664 404.656 429.927C383.966 413.221 366.641 391.371 355.352 360.984C320.859 268.13 361.593 159.721 463.209 98.0834C566.862 35.7355 734.57 22.1053 953.747 117.068Z" stroke="url(#Line3)" stroke-width="2" stroke-miterlimit="10"></path>
+        <path class="line5" d="M955.171 136.927C1132.12 213.211 1200.19 319.781 1217.19 417.512C1233.59 511.731 1202.19 596.989 1180.82 635.938C1111.46 762.286 934.419 884.965 809.582 803.048C696.788 729.032 771.567 668.775 696.329 562.289C694.088 559.118 691.736 556.099 689.347 553.174C625.498 474.611 516.225 478.956 450.75 421.143C432.572 405.093 417.393 384.699 407.708 357.086C376.95 269.391 414.936 171.525 507.41 117.104C602.315 61.2487 756.061 51.0884 955.171 136.927Z" stroke="url(#Line4)" stroke-width="2" stroke-miterlimit="10"></path>
+        <path class="line6" d="M956.596 156.785C1111.92 222.988 1173.29 316.144 1189.27 402.4C1204.45 484.265 1178.34 559.02 1159.45 594.988C1099.59 709.001 942.944 819.89 827.68 753.704C724.87 694.669 780.649 641.419 712.401 548.548C710.322 545.72 708.137 543.027 705.934 540.404C647.356 470.246 552.586 467.195 496.843 412.357C481.181 396.949 468.171 378.01 460.063 353.184C433.096 270.614 468.401 183.525 551.609 136.121C637.892 86.9637 777.406 80.407 956.596 156.785Z" stroke="url(#Line5)" stroke-width="2" stroke-miterlimit="10"></path>
+        <path class="line7" d="M958.02 176.642C1091.7 232.788 1146.36 312.507 1161.35 387.288C1175.28 456.798 1154.47 521.04 1138.09 554.038C1087.65 655.674 951.609 754.746 845.777 704.359C753.08 660.226 789.671 614.095 728.474 534.806C726.556 532.321 724.541 529.955 722.522 527.633C669.216 465.883 588.979 455.367 542.937 403.571C529.796 388.788 518.983 371.307 512.419 349.283C489.322 271.795 521.877 195.541 595.81 155.138C673.479 112.692 798.741 109.745 958.02 176.642Z" stroke="url(#Line6)" stroke-width="2" stroke-miterlimit="10"></path>
+        <path class="line8" d="M959.444 196.5C1071.47 242.622 1119.41 308.871 1133.43 372.176C1146.09 429.335 1130.57 483.044 1116.73 513.088C1075.63 602.294 958.449 694.607 863.874 655.016C783.153 621.226 798.608 586.823 744.546 521.065C742.787 518.925 740.943 516.884 739.109 514.862C691.073 461.518 625.427 443.459 589.03 394.784C578.426 380.604 569.836 364.586 564.773 345.382C545.669 272.925 575.367 207.578 640.009 174.155C709.081 138.443 820.062 139.115 959.444 196.5Z" stroke="url(#Line7)" stroke-width="2" stroke-miterlimit="10"></path>
+        <path class="line9" d="M960.869 216.358C1051.21 252.507 1092.41 305.242 1105.51 357.064C1116.84 401.88 1106.64 445.027 1095.37 472.138C1063.48 548.851 969.471 623.821 881.972 605.673C809.977 590.741 807.432 559.632 760.619 507.325C759.015 505.532 757.346 503.814 755.697 502.093C712.933 457.155 661.981 431.464 635.124 385.999C627.088 372.396 620.747 357.852 617.129 341.481C602.218 273.999 628.877 219.65 684.21 193.172C744.702 164.227 841.358 168.54 960.869 216.358Z" stroke="url(#Line8)" stroke-width="2" stroke-miterlimit="10"></path>
+        <path class="line10" d="M962.293 236.215C1030.93 262.475 1065.3 301.637 1077.59 341.952C1087.5 374.447 1082.63 406.984 1074.01 431.188C1051.15 495.338 978.54 557.571 900.069 556.329C838.542 555.355 816.098 532.589 776.691 493.584C775.236 492.143 773.748 490.742 772.284 489.323C734.792 452.792 698.714 419.397 681.217 377.213C675.804 364.164 671.727 351.108 669.483 337.581C659.106 275.019 682.411 231.777 728.409 212.19C780.352 190.074 862.609 198.077 962.293 236.215Z" stroke="url(#Line9)" stroke-width="2" stroke-miterlimit="10"></path>
+        <path class="line11" d="M918.167 506.986C864.602 519.854 821.092 504.678 788.872 476.553C756.651 448.428 735.72 407.354 727.311 368.427C710.058 288.556 729.183 246.374 772.61 231.208C816.036 216.041 883.765 227.888 963.717 256.072C1043.67 284.257 1066.77 338.698 1052.64 390.237C1038.52 441.777 987.152 490.413 918.167 506.986Z" stroke="url(#Line10)" stroke-width="2" stroke-miterlimit="10"></path>
+        <defs>
+            <linearGradient id="Line0" x1="574.121" y1="960.101" x2="899.868" y2="36.0373" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#FF437E" stop-opacity="0.2"></stop>
+                <stop offset="1" stop-color="#3C82F4"></stop>
+            </linearGradient>
+            <linearGradient id="Line1" x1="600.829" y1="910.505" x2="901.866" y2="56.5348" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#FF437E" stop-opacity="0.2"></stop>
+                <stop offset="1" stop-color="#3C82F4"></stop>
+            </linearGradient>
+            <linearGradient id="Line2" x1="627.54" y1="861.045" x2="903.911" y2="77.048" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#FF437E" stop-opacity="0.2"></stop>
+                <stop offset="1" stop-color="#3C82F4"></stop>
+            </linearGradient>
+            <linearGradient id="Line3" x1="654.218" y1="811.744" x2="905.976" y2="97.5672" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#FF437E" stop-opacity="0.2"></stop>
+                <stop offset="1" stop-color="#3C82F4"></stop>
+            </linearGradient>
+            <linearGradient id="Line4" x1="680.783" y1="762.649" x2="908.045" y2="117.964" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#FF437E" stop-opacity="0.2"></stop>
+                <stop offset="1" stop-color="#3C82F4"></stop>
+            </linearGradient>
+            <linearGradient id="Line5" x1="707.292" y1="713.891" x2="910.137" y2="138.467" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#FF437E" stop-opacity="0.2"></stop>
+                <stop offset="1" stop-color="#3C82F4"></stop>
+            </linearGradient>
+            <linearGradient id="Line6" x1="733.665" y1="665.653" x2="912.272" y2="158.988" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#FF437E" stop-opacity="0.2"></stop>
+                <stop offset="1" stop-color="#3C82F4"></stop>
+            </linearGradient>
+            <linearGradient id="Line7" x1="759.729" y1="618.515" x2="914.476" y2="179.537" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#FF437E" stop-opacity="0.2"></stop>
+                <stop offset="1" stop-color="#3C82F4"></stop>
+            </linearGradient>
+            <linearGradient id="Line8" x1="785.137" y1="573.631" x2="916.801" y2="200.131" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#FF437E" stop-opacity="0.2"></stop>
+                <stop offset="1" stop-color="#3C82F4"></stop>
+            </linearGradient>
+            <linearGradient id="Line9" x1="808.936" y1="534" x2="919.346" y2="220.794" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#FF437E" stop-opacity="0.2"></stop>
+                <stop offset="1" stop-color="#3C82F4"></stop>
+            </linearGradient>
+            <linearGradient id="Line10" x1="830.379" y1="502.266" x2="922.311" y2="241.476" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#FF437E" stop-opacity="0.2"></stop>
+                <stop offset="1" stop-color="#3C82F4"></stop>
+            </linearGradient>
+        </defs>
+    </svg>
+    <div class="show_menu">А</div>
+    <div class="menu menuClosed">
+        <div class="menu_inner">
+            <div class="closed">X</div>
+            <div data-trigger="home" class="menu_inner-item">Главная</div>
+            <div data-trigger="showLearnWords" class="menu_inner-item">Выученные слова</div>
+            <div data-trigger="100words" class="menu_inner-item">0-100 слов</div>
+            <div data-trigger="200words" class="menu_inner-item">100-200 слов</div>
+            <div data-trigger="300words" class="menu_inner-item">200-300 слов</div>
+            <div data-trigger="400words" class="menu_inner-item">300-400 слов</div>
+            <div data-trigger="500words" class="menu_inner-item">400-500 слов</div>
+            <div data-trigger="600words" class="menu_inner-item">500-600 слов</div>
+            <div data-trigger="700words" class="menu_inner-item">600-700 слов</div>
+            <div data-trigger="800words" class="menu_inner-item">700-800 слов</div>
+            <div data-trigger="900words" class="menu_inner-item">800-900 слов</div>
+            <div data-trigger="1000words" class="menu_inner-item">900-1000 слов</div>
+        </div>
+    </div>
+    <div class="allCards">
+    </div>
+    <script src="./animate.js"></script>
+   <script src="./main.js"></script>
+</body>
+</html>

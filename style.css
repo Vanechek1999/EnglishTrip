@@ -1,0 +1,318 @@
+.getYourWords{
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #000;
+  color: #fff;
+  z-index: 90;
+}
+
+*{
+  padding: 0;
+  margin: 0;
+  outline: none;
+}
+
+body {
+    margin: 0;
+    background: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-x: hidden;
+    color: #fff;
+  }
+  body .line {
+    position: absolute;
+    pointer-events: none;
+    top: 0;
+    right: 0px;
+    z-index: 1;
+    stroke-dasharray: 5000;
+    stroke-dashoffset: 5000;
+    z-index: 20;
+}
+  body::before{
+    content: '';
+    position: absolute;
+    width: 393.79px;
+    height: 556.44px;
+    left: -5%;
+    top: -10%;
+    background: #3C82F4;
+    opacity: 0.3;
+    filter: blur(160px);
+    transform: rotate(12.08deg);
+  }
+  .container {
+    text-align: center;
+    width: 320px;
+    margin: 20px auto;
+    -webkit-perspective: 1200;
+    perspective: 1200;
+    -moz-transform: perspective(1200px);
+    -webkit-transform-style: preserve-3d;
+    -moz-transform-style: preserve-3d; 
+    transform-style: preserve-3d;
+    color: #000;
+  }
+  .flipper {
+    position: relative;
+    width: 320px;
+      height: 280px;
+    -webkit-transform-style: preserve-3d;
+    -moz-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+    -webkit-transition: .7s linear;
+    -moz-transition: .7s linear;
+    -o-transition: .7s linear;
+    transition: .7s linear;  
+  }
+  .front, .back {
+    box-sizing: border-box;
+    font-family: 'Cabin', sans-serif;
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 40px 20px 20px;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+  .front {
+    z-index: 2;
+    -webkit-transform: rotateY(0deg);
+    -moz-transform: rotateY(0deg);
+    -ms-transform: rotateY(0deg);
+    transform: rotateY(0deg);
+    background: white;
+    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid #f5f5f5;
+  }
+
+  h3 {
+    font-size: 16px;
+    line-height: 20px;
+    text-transform: uppercase;
+    margin: 0 0 15px;
+  }
+  .header h3 {
+    color: #18191a;
+  }
+  .back {
+    -webkit-transform: rotateY(-180deg);
+    -moz-transform: rotateY(-180deg);
+    -ms-transform: rotateY(-180deg);
+    transform: rotateY(-180deg);
+    background: #DCB8B2;
+    color: white;
+  }
+  .back h3 {
+    position: relative;
+  }
+
+ .trueFalse{
+   display: flex;
+   align-items: center;
+   justify-content: center;
+ }
+ .rightOrFalse{
+   margin-left: 10px;
+   background: url('./img/right.png') no-repeat center;
+   width: 20px;
+   height: 20px;
+ }
+  /* .container:hover .flipper{
+    -webkit-transform: rotateY(180deg);
+    -moz-transform: rotateY(180deg);
+    -ms-transform: rotateY(180deg);
+    transform: rotateY(180deg);
+  } */
+
+  .answer{
+    display: flex;
+    align-items: center;
+    justify-content: center
+  }
+  .answer input{
+    height: 18px;
+    border-top: 1px solid;
+    border-right: 0;
+    border-left: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+  }
+  .answer button{
+    width: 20px;
+    height: 20px;
+    border-top: 1px solid;
+    border-right: 1px solid;
+    border-left: 0;
+    border-bottom: 1px solid;
+    border-color: black;
+    cursor: pointer;
+  }
+  .allCards{
+    display: flex;
+    background: #000;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 30;
+    height: 100vh;
+  }
+
+
+  .addThisWord{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin: 12px auto;
+    width: 200px;
+    padding: 10px;
+    background: #DCB8B2;
+    color: #000;
+    border-radius: 4px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 18px;
+    font-weight: lighter;
+    transition: 1s box-shadow;
+    overflow: hidden;
+    z-index: 1;
+    text-align: center;
+  }
+  .addThisWord::before {
+    content: '';
+    position: absolute;
+    width: 20%;
+    height: 525%;
+    background: linear-gradient(#00ccff, #d400d4);
+    animation: rotate1 4s linear infinite;
+}
+.addThisWord::after {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  background: aliceblue;
+  border-radius: 4px;
+}
+@keyframes rotate1 {
+  0%{
+      transform: rotate(0deg);
+  }
+  100%{
+      transform: rotate(360deg);
+  }
+}
+.addThisWord span{
+  z-index: 2;
+}
+  /* Меню */
+
+
+.menu{
+  position: absolute;
+  background: #000;
+  font-size: 24px;
+  width: 100vw;
+  height: 100vh;
+  color: #fff;
+  transition: transform .5s ease-in-out;
+  top: 0;
+  right: 0;
+  z-index: 31;
+}
+.menu_inner{
+  position: relative;
+  float: right;
+  padding: 30px;
+}
+.menu::before{
+  content: '';
+  position: absolute;
+  width: 393.79px;
+  height: 556.44px;
+  left: 5%;
+  bottom: 5%;
+  background: #3C82F4;
+  opacity: 0.3;
+  filter: blur(160px);
+  transform: rotate(12.08deg);
+}
+.closed{
+  position: absolute;
+  top: 0;
+  right: 0;
+  cursor: pointer;
+}
+.menu_inner-item{
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+.item:last-child{
+  margin-bottom: 0px;
+}
+.menuClosed{
+  transition: transform .5s ease-in-out;
+  transform: translateX(102vw);
+}
+.show_menu{
+  position: absolute;
+  top: 0;
+  right: 0;
+  cursor: pointer;
+  z-index: 31;
+}
+
+.line{
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.line path{
+stroke-dasharray: 5000;
+stroke-dashoffset: 5000;
+}
+/* Кастомный курсор в html два пустых div с соответсвущими классами */
+/* .cursor {
+width: 50px;
+height: 50px;
+border-radius: 100%;
+border: 1px solid #fff;
+transition: all 200ms ease-out;
+position: fixed;
+pointer-events: none;
+left: 0;
+top: 0;
+transform: translate(calc(-50% + 15px), -50%);
+z-index: 100;
+}
+
+.cursor2 {
+width: 20px;
+height: 20px;
+border-radius: 100%;
+background: #fff;
+opacity: .3;
+position: fixed;
+transform: translate(-50%, -50%);
+pointer-events: none;
+transition: width .3s, height .3s, opacity .3s;
+z-index: 100;
+} */
+
+canvas{
+  position: absolute;
+opacity: 1;
+transition: opacity .5s ease-in-out;
+top: 0;
+left: 0;
+z-index: 10;
+}
+.hide{
+opacity: 0;
+transition: opacity .5s ease-in-out;
+}
