@@ -9,6 +9,7 @@ function getAllElements(startValue,endValue){
             document.querySelector('.allCards').innerHTML = '';
         }
         for(let i = startValue; i<endValue; i++){
+            console.log(data[i].english, data[i].russian);
             let rend = new Card(data[i].english, data[i].russian, '.allCards')
             rend.render()
         }
@@ -173,6 +174,9 @@ allTrigger.forEach(trigger=>{
             case '1000words':
                 getAllElements((parseInt(this.getAttribute('data-trigger'))-100),parseInt(this.getAttribute('data-trigger')))
                 break;
+            case 'challange':
+                drawGame()
+                break
             default:
                 break;
         }
@@ -216,12 +220,11 @@ function getYourWords(){
         for(let i = 0; i<yourWords.length; i++){
             let a = eval('({obj:[' + yourWords[i] + ']})')
             if(yourWords[i].length !== 0){
-                console.log(i+1);
                 if(showYourWords){
                     let rend = new Card(a.obj[0].english, a.obj[0].russian, '.allCards')
                     rend.render()
                 }else{
-                    console.log(a.obj[0].english, a.obj[0].russian,);
+                    // console.log(i+1, a.obj[0].english, a.obj[0].russian,);
                 }
 
             }else{
@@ -231,4 +234,151 @@ function getYourWords(){
         }
     })
 }
-getYourWords()
+getYourWords() 
+
+
+// Game
+
+function drawGame(){
+    menu.classList.add('menuClosed');
+    document.querySelector('.allCards').classList.add('show_Cards')
+    document.querySelector('.allCards').innerHTML=`
+    <div class="option">
+    <h2>Добро пожаловать в игру</h2>
+    <p>Выбирите параметры игры</p>
+        <div class="option_inner">
+            Выберите количество слов: <input type="number">
+            Выберите уровень сложности: <select>    
+                                            <option value="30">Легкий</option>
+                                            <option value="20">Средний</option>
+                                            <option value="10">Сложный</option>
+                                        </select>
+            <button class="startThisGame">Start game</button>
+        </div>
+    </div>
+    `;
+    document.querySelector('.option_inner select').addEventListener('change', function(){
+        console.log(this.value);
+    })
+    document.querySelector('.startThisGame').addEventListener('click', ()=>{
+        if(+document.querySelector('.option_inner input[type="number"]').value.length !== 0){
+            startGame(+document.querySelector('.option_inner input[type="number"]').value)
+        }else{
+            console.log('Поле пустое');
+        }
+        
+    })
+}
+
+function startGame(countOfWords){
+    fetch('/db1.json')
+        .then(response=>{
+            return response.json()
+        })
+        .then(data=>{
+            
+            clearOption()
+            for(let i=0; i<countOfWords; i++){
+                rend = new CardForGame(data[i].english, data[i].russian, '.allCards');
+                rend.render()
+                const nextCard = document.querySelectorAll('.nextCard');
+                let countOfCards = i+1;
+                let counter = 0;
+                nextCard.forEach(next =>{
+                    next.addEventListener('click', function(){
+                        let find = this.parentNode;
+                        let check = find.querySelector('.checkTrueOrFalse');
+                        if(this.innerText !== 'Закончить тестирование'){
+                            if(find.querySelector('input[type="text"]').value.length !==0){
+                                if(find.querySelector('.rightAnswer').innerText.indexOf(find.querySelector('input[type="text"]').value) !== -1){
+                                    counter++;
+                                    console.log(counter);
+                                    check.style.background = ''
+                                    setTimeout(()=>{
+                                        check.style.opacity = '1';
+                                    }, 100)
+                                }else{
+                                    check.style.background = 'url(./img/false.png) no-repeat center'
+                                    setTimeout(()=>{
+                                        check.style.opacity = '1';
+                                    }, 100)
+                                }
+                                countOfCards--;
+                                if(countOfCards <= 1){
+                                    find.previousElementSibling.querySelector('.nextCard').innerText="Закончить тестирование"
+                                    setTimeout(()=>{
+                                        find.style.left="200%"
+                                    }, 500)
+                                   
+                                }else{
+                                    setTimeout(()=>{
+                                        find.style.left="200%"
+                                    }, 500)
+                                }
+                            }else{
+                                return
+                            }
+                        }else{
+                            if(find.querySelector('.rightAnswer').innerText.indexOf(find.querySelector('input[type="text"]').value) !== -1){
+                                counter++;
+                                counter++;
+                                console.log(counter);
+                                check.style.background = ''
+                                setTimeout(()=>{
+                                    check.style.opacity = '1';
+                                }, 100)
+                            }else{
+                                check.style.background = 'url(./img/false.png) no-repeat center'
+                                setTimeout(()=>{
+                                    check.style.opacity = '1';
+                                }, 100)
+                            }
+                            setTimeout(()=>{
+                                find.innerHTML= `
+                                <p>Вы ответили на ${(counter/(i+1))*100}% из 100%</p>
+                                <button class="closeGame">На главную</button>
+                                `;
+                                closeGame()
+                            }, 500)
+
+                        }
+
+
+                    })
+                })
+            }
+            
+        })
+}
+function closeGame(){
+    document.querySelector('.closeGame').addEventListener('click', function(){
+        document.querySelector('.allCards').innerText=''
+        document.querySelector('.allCards').classList.remove('show_Cards')
+    })
+}
+function clearOption(){
+    document.querySelector('.option').style.opacity = '0';
+    setTimeout(()=>{
+        document.querySelector('.option').remove()
+    }, 600)
+
+}
+class CardForGame{
+    constructor(cardEnglish, cardRussian, parent){
+        this.cardEnglish = cardEnglish;
+        this.cardRussian = cardRussian;
+        this.parent      =  document.querySelector(parent);
+    }
+    render(){
+        const game = document.createElement('div');
+        game.classList.add('cardForGame');
+        game.innerHTML = `
+        <h2>${this.cardEnglish}</h2>
+        <input type="text" placeholder="Ваш ответ">
+        <h2 class="rightAnswer">${this.cardRussian}</h2>
+        <div class="checkTrueOrFalse"></div>
+        <button class="nextCard">Следующая карта</button>
+        `;
+        this.parent.append(game)
+    }
+}
