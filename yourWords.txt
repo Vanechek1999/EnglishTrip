@@ -22,4 +22,16 @@
             };{
                 "english": "use",
                 "russian": "использовать"
+            };{
+                "english": "write",
+                "russian": "писать"
+            };{
+                "english": "bird",
+                "russian": "птица"
+            };{
+                "english": "bed",
+                "russian": "кровать"
+            };{
+                "english": "battle",
+                "russian": "битва"
             };

@@ -1,43 +1,69 @@
+let allWordsInBase,
+    yourSaveWords =[]
+// Получаем из json все слова
+async function getData(){
+    const response = await fetch('./db1.json');
+    const words    = await response.json();
+    return allWordsInBase = words
+}
+getData().then(allWordsInBase=>{
+    return allWordsInBase
+})
+
+
+
+
+
 function getAllElements(startValue,endValue){
     menu.classList.add('menuClosed')
-    fetch('./db1.json')
-    .then((response)=>{
-        return response.json()
+    if(document.querySelectorAll('.flipper').length !== 0){
+        document.querySelector('.allCards').innerHTML = '';
+    }
+    for(let i = startValue; i<endValue; i++){
+        for(let y = 0; y< yourSaveWords.length; y++){
+        }
+        let rend = new Card(allWordsInBase[i].english, allWordsInBase[i].russian, '.allCards')
+        rend.render()
+    }
+    const  btns = document.querySelectorAll('.sendAnswer'),
+            addWordOrRepeat = document.querySelectorAll('.addThisWord');
+    btns.forEach(btn=>{
+        btn.addEventListener('click', checkRightAnswer)
     })
-    .then((data)=>{
-        if(document.querySelectorAll('.flipper').length !== 0){
-            document.querySelector('.allCards').innerHTML = '';
-        }
-        for(let i = startValue; i<endValue; i++){
-            console.log(data[i].english, data[i].russian);
-            let rend = new Card(data[i].english, data[i].russian, '.allCards')
-            rend.render()
-        }
-        const  btns = document.querySelectorAll('.sendAnswer'),
-               addWordOrRepeat = document.querySelectorAll('.addThisWord');
-        btns.forEach(btn=>{
-            btn.addEventListener('click', checkRightAnswer)
+    addWordOrRepeat.forEach(word => {
+        word.addEventListener('click', function(){
+            if(this.querySelector('span').innerText === 'Добавить в выученные слова'){
+                let englishWord = this.parentNode.parentNode.querySelector('.header .word').innerText,
+                    russianWord = this.parentNode.querySelector('.russian').innerText
+                writeFile(englishWord,russianWord)
+                console.log('Добавляем слово в базу');
+            }else{
+                console.log( this.parentNode.parentNode);
+                this.parentNode.parentNode.style.cssText = `
+                -webkit-transform: rotateY(0deg);
+                -moz-transform: rotateY(0deg);
+                -ms-transform: rotateY(0deg);
+                transform: rotateY(0deg);
+            `
+                console.log('Необходимо повторить');
+            }
         })
-        addWordOrRepeat.forEach(word => {
-            word.addEventListener('click', function(){
-                if(this.querySelector('span').innerText === 'Добавить в выученные слова'){
-                    let englishWord = this.parentNode.parentNode.querySelector('.header .word').innerText,
-                        russianWord = this.parentNode.querySelector('.russian').innerText
-                    writeFile(englishWord,russianWord)
-                    console.log('Добавляем слово в базу');
-                }else{
-                    console.log( this.parentNode.parentNode);
-                    this.parentNode.parentNode.style.cssText = `
-                    -webkit-transform: rotateY(0deg);
-                    -moz-transform: rotateY(0deg);
-                    -ms-transform: rotateY(0deg);
-                    transform: rotateY(0deg);
-                `
-                    console.log('Необходимо повторить');
-                }
-            })
-        })
-    });
+    })
+    checkWords()
+}
+
+function checkWords(){
+    let allCards = document.querySelectorAll('.allCards .container');
+    console.log(yourSaveWords);
+    for(let i = 0; i < allCards.length; i++){
+        for(let y = 0; y < yourSaveWords.length; y++){
+            console.log( yourSaveWords[y]);
+            if(yourSaveWords[y].english === allCards[i].querySelector('.word').innerText){
+                allCards[i].classList.add('NewCLass')
+            }
+        }
+    }
+
 }
 
 
@@ -80,7 +106,7 @@ class Card{
 function checkRightAnswer(){
     let thisCard = this.parentNode.parentNode.parentNode.parentNode;
     if(this.previousElementSibling.value.length !== 0){
-        if(this.previousElementSibling.value == thisCard.querySelector('.russian').innerText){
+        if(this.previousElementSibling.value.toLowerCase() == thisCard.querySelector('.russian').innerText){
             thisCard.querySelector('.trueFalse span').innerHTML = 'Это правильный ответ';
             thisCard.querySelector('.addThisWord span').innerHTML = 'Добавить в выученные слова';
             thisCard.querySelector('.rightOrFalse').style.background = 'url(./img/right.png) no-repeat center'
@@ -145,7 +171,7 @@ allTrigger.forEach(trigger=>{
                 getYourWords()
                 break;
             case '100words':
-                getAllElements((parseInt(this.getAttribute('data-trigger'))-100),parseInt(this.getAttribute('data-trigger')))
+                getAllElements((parseInt(this.getAttribute('data-trigger'))-100),parseInt(this.getAttribute('data-trigger')));
                 break;
             case '200words':
                 getAllElements((parseInt(this.getAttribute('data-trigger'))-100),parseInt(this.getAttribute('data-trigger')))
@@ -185,6 +211,7 @@ allTrigger.forEach(trigger=>{
 
 
 // Запоминание слова
+
 function writeFile(englishWord, translate) {    
     $.ajax({
         type: "post",
@@ -224,6 +251,8 @@ function getYourWords(){
                     let rend = new Card(a.obj[0].english, a.obj[0].russian, '.allCards')
                     rend.render()
                 }else{
+                    yourSaveWords.push(a.obj[0]);
+                    // console.log(a.obj[0]);
                     // console.log(i+1, a.obj[0].english, a.obj[0].russian,);
                 }
 
@@ -271,84 +300,74 @@ function drawGame(){
 }
 
 function startGame(countOfWords){
-    fetch('/db1.json')
-        .then(response=>{
-            return response.json()
-        })
-        .then(data=>{
-            
-            clearOption()
-            for(let i=0; i<countOfWords; i++){
-                rend = new CardForGame(data[i].english, data[i].russian, '.allCards');
-                rend.render()
-                const nextCard = document.querySelectorAll('.nextCard');
-                let countOfCards = i+1;
-                let counter = 0;
-                nextCard.forEach(next =>{
-                    next.addEventListener('click', function(){
-                        let find = this.parentNode;
-                        let check = find.querySelector('.checkTrueOrFalse');
-                        if(this.innerText !== 'Закончить тестирование'){
-                            if(find.querySelector('input[type="text"]').value.length !==0){
-                                if(find.querySelector('.rightAnswer').innerText.indexOf(find.querySelector('input[type="text"]').value) !== -1){
-                                    counter++;
-                                    console.log(counter);
-                                    check.style.background = ''
-                                    setTimeout(()=>{
-                                        check.style.opacity = '1';
-                                    }, 100)
-                                }else{
-                                    check.style.background = 'url(./img/false.png) no-repeat center'
-                                    setTimeout(()=>{
-                                        check.style.opacity = '1';
-                                    }, 100)
-                                }
-                                countOfCards--;
-                                if(countOfCards <= 1){
-                                    find.previousElementSibling.querySelector('.nextCard').innerText="Закончить тестирование"
-                                    setTimeout(()=>{
-                                        find.style.left="200%"
-                                    }, 500)
-                                   
-                                }else{
-                                    setTimeout(()=>{
-                                        find.style.left="200%"
-                                    }, 500)
-                                }
-                            }else{
-                                return
-                            }
-                        }else{
-                            if(find.querySelector('.rightAnswer').innerText.indexOf(find.querySelector('input[type="text"]').value) !== -1){
-                                counter++;
-                                counter++;
-                                console.log(counter);
-                                check.style.background = ''
-                                setTimeout(()=>{
-                                    check.style.opacity = '1';
-                                }, 100)
-                            }else{
-                                check.style.background = 'url(./img/false.png) no-repeat center'
-                                setTimeout(()=>{
-                                    check.style.opacity = '1';
-                                }, 100)
-                            }
+    clearOption()
+    for(let i=0; i<countOfWords; i++){
+        rend = new CardForGame(allWordsInBase[i].english, allWordsInBase[i].russian, '.allCards');
+        rend.render()
+        const nextCard = document.querySelectorAll('.nextCard');
+        let countOfCards = i+1;
+        let counter = 0;
+        nextCard.forEach(next =>{
+            next.addEventListener('click', function(){
+                let find = this.parentNode;
+                let check = find.querySelector('.checkTrueOrFalse');
+                if(this.innerText !== 'Закончить тестирование'){
+                    if(find.querySelector('input[type="text"]').value.length !==0){
+                        if(find.querySelector('.rightAnswer').innerText.indexOf(find.querySelector('input[type="text"]').value) !== -1){
+                            counter++;
+                            console.log(counter);
+                            check.style.background = ''
                             setTimeout(()=>{
-                                find.innerHTML= `
-                                <p>Вы ответили на ${(counter/(i+1))*100}% из 100%</p>
-                                <button class="closeGame">На главную</button>
-                                `;
-                                closeGame()
-                            }, 500)
-
+                                check.style.opacity = '1';
+                            }, 100)
+                        }else{
+                            check.style.background = 'url(./img/false.png) no-repeat center'
+                            setTimeout(()=>{
+                                check.style.opacity = '1';
+                            }, 100)
                         }
+                        countOfCards--;
+                        if(countOfCards <= 1){
+                            find.previousElementSibling.querySelector('.nextCard').innerText="Закончить тестирование"
+                            setTimeout(()=>{
+                                find.style.left="200%"
+                            }, 500)
+                            
+                        }else{
+                            setTimeout(()=>{
+                                find.style.left="200%"
+                            }, 500)
+                        }
+                    }else{
+                        return
+                    }
+                }else{
+                    if(find.querySelector('.rightAnswer').innerText.indexOf(find.querySelector('input[type="text"]').value) !== -1){
+                        counter++;
+                        check.style.background = ''
+                        setTimeout(()=>{
+                            check.style.opacity = '1';
+                        }, 100)
+                    }else{
+                        check.style.background = 'url(./img/false.png) no-repeat center'
+                        setTimeout(()=>{
+                            check.style.opacity = '1';
+                        }, 100)
+                    }
+                    setTimeout(()=>{
+                        find.innerHTML= `
+                        <p>Вы ответили на ${(counter/(i+1))*100}% из 100%</p>
+                        <button class="closeGame">На главную</button>
+                        `;
+                        closeGame()
+                    }, 500)
+
+                }
 
 
-                    })
-                })
-            }
-            
+            })
         })
+    }
 }
 function closeGame(){
     document.querySelector('.closeGame').addEventListener('click', function(){
