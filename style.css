@@ -1,3 +1,65 @@
+@font-face {
+  font-family: 'PlayfairDisplay';
+  src: url('./fonts/PlayfairDisplay-Regular.ttf') format('truetype'),;
+  font-style: normal;
+  font-weight: 400;
+}
+@font-face {
+  font-family: 'PlayfairDisplay-Bold';
+  src: url('./fonts/PlayfairDisplay-Bold.ttf') format('truetype'),;
+  font-style: normal;
+  font-weight: 700;
+}
+@font-face {
+  font-family: 'PlayfairDisplay-SemiBold';
+  src: url('./fonts/PlayfairDisplay-SemiBold.ttf') format('truetype'),;
+  font-style: normal;
+  font-weight: 600;
+}
+body {
+  font-family: 'PlayfairDisplay', sans-serif;
+  margin: 0;
+  background: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-x: hidden;
+  color: #fff;
+}
+*{
+  padding: 0;
+  margin: 0;
+  outline: none;
+}
+
+body .line {
+  position: absolute;
+  pointer-events: none;
+  top: 0;
+  right: 0px;
+  z-index: 1;
+  stroke-dasharray: 5000;
+  stroke-dashoffset: 5000;
+  z-index: 20;
+}
+body::before{
+  content: '';
+  position: absolute;
+  width: 393.79px;
+  height: 556.44px;
+  left: -5%;
+  top: -10%;
+  background: #3C82F4;
+  opacity: 0.3;
+  filter: blur(160px);
+  transform: rotate(12.08deg);
+}
+h2{
+  font-family: 'PlayfairDisplay-Bold', sans-serif;
+}
+h3{
+  font-family: 'PlayfairDisplay-SemiBold', sans-serif;
+}
 .getYourWords{
   position: absolute;
   top: 0;
@@ -8,43 +70,6 @@
   z-index: 90;
 }
 
-*{
-  padding: 0;
-  margin: 0;
-  outline: none;
-}
-
-body {
-    margin: 0;
-    background: #000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow-x: hidden;
-    color: #fff;
-  }
-  body .line {
-    position: absolute;
-    pointer-events: none;
-    top: 0;
-    right: 0px;
-    z-index: 1;
-    stroke-dasharray: 5000;
-    stroke-dashoffset: 5000;
-    z-index: 20;
-}
-  body::before{
-    content: '';
-    position: absolute;
-    width: 393.79px;
-    height: 556.44px;
-    left: -5%;
-    top: -10%;
-    background: #3C82F4;
-    opacity: 0.3;
-    filter: blur(160px);
-    transform: rotate(12.08deg);
-  }
   .container {
     text-align: center;
     width: 320px;
@@ -81,6 +106,8 @@ body {
     -webkit-backface-visibility: hidden;
     -moz-backface-visibility: hidden;
     backface-visibility: hidden;
+    border-radius: 6px;
+    box-shadow: 0px 3px 10px rgb(0 0 0 / 5%);
   }
   .front {
     z-index: 2;
@@ -88,16 +115,21 @@ body {
     -moz-transform: rotateY(0deg);
     -ms-transform: rotateY(0deg);
     transform: rotateY(0deg);
-    background: white;
-    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
-    border-bottom: 1px solid #f5f5f5;
+    background: #d1d9e6;
+    box-shadow: 0px 5px 10px 5px rgb(0 0 0 / 65%);
+    /* border-bottom: 1px solid #f5f5f5; */
   }
+
 
   h3 {
     font-size: 16px;
     line-height: 20px;
     text-transform: uppercase;
     margin: 0 0 15px;
+  }
+  .header{
+    display: flex;
+    flex-direction: column;
   }
   .header h3 {
     color: #18191a;
@@ -125,6 +157,40 @@ body {
    width: 20px;
    height: 20px;
  }
+ .sayWord{
+  position: relative;
+  display: flex;
+  padding: 10px 0;
+  border-radius: 40px;
+  border: none;
+  transition: all 500ms cubic-bezier(0.77, 0, 0.175, 1);  
+  background: transparent;
+  
+ }
+ 
+ .sayWord:after {
+  content: '';
+  position: absolute; 
+  transition: inherit;
+  z-index: -1;
+   top: 0;
+   width: 0;
+   height: 100%;
+ }
+ 
+ 
+ .sayWord:after {
+   left: 0;
+   background: #fff;
+   border-radius: 40px;
+ }
+ 
+ .sayWord:hover:after {
+   width: 100%;
+ }
+ .sayWord span{
+   margin: 0 auto;
+ }
   /* .container:hover .flipper{
     -webkit-transform: rotateY(180deg);
     -moz-transform: rotateY(180deg);
@@ -132,28 +198,30 @@ body {
     transform: rotateY(180deg);
   } */
 
-  .answer{
+  /* .answer{
     display: flex;
     align-items: center;
     justify-content: center
+  } */
+  .writeYourAnswer{
+    padding: 5px 15px;
+    border: 1px solid black;
+    border-radius: 4px;
+    margin-top: 20px;
+    font-size: 16px;
+    color: #000;
   }
-  .answer input{
-    height: 18px;
-    border-top: 1px solid;
-    border-right: 0;
-    border-left: 1px solid;
-    border-bottom: 1px solid;
-    border-color: black;
+  .writeYourAnswer::placeholder{
+    font-size: 16px;
+    color: #000;
   }
-  .answer button{
-    width: 20px;
-    height: 20px;
-    border-top: 1px solid;
-    border-right: 1px solid;
-    border-left: 0;
-    border-bottom: 1px solid;
-    border-color: black;
+  .sendAnswer{
+    margin-top: 20px;
+    border: 1px solid black;
     cursor: pointer;
+    padding: 5px 0;
+    border-radius: 4px;
+    font-size: 16px;
   }
   .allCards{
     display: flex;
@@ -161,11 +229,22 @@ body {
     flex-wrap: wrap;
     position: relative;
     z-index: 30;
-    height: 100vh;
+    background: linear-gradient(45deg, rgb(130 16 253) 17%, rgb(1 185 255) 84%);
+    padding-bottom: 14rem;
+    padding-top: 30px;
 
   }
 .show_Cards{
   width: 100vw;
+  height: 100vh;
+  justify-content: center;
+}
+.countOfWords{
+  font-family: 'PlayfairDisplay-Bold', sans-serif;
+  font-weight: 700  ;
+  font-size: 1.5rem;
+  position: absolute;
+  top: 28%;
 }
 
   .addThisWord{
@@ -214,7 +293,57 @@ body {
   z-index: 2;
 }
   /* Меню */
+  .show_menu{
+    position: absolute;
+    top: 20px;
+    right: 10px;
+    cursor: pointer;
+    z-index: 35;
+    width: 46px;
+    height: 46px;
+  }
+  .bar {
+    position: relative;
+    width: 40px;
+    height: 2px;
+    background: #fff;
+  }
+    
+  .bar::before, .bar::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: inherit;
+    left: 0;
+    transform-origin: center center;
+    transition: transform .25s ease, top .25s ease, bottom .25s ease;
+  }
+  
+  .bar::before {
+    top: -10px;
+  }
+  
+  .bar::after {
+    bottom: -10px;
+  }
+  .clicked .bar{
+    background: transparent;
+  }
+  .clicked .bar::before, .clicked .bar::after{
+    background: #fff;
+    
+  }
+  .clicked .bar::before{
+    transform: rotate(45deg);
+    top: 0;
+  }
+  .clicked .bar::after{
+    transform: rotate(-45deg);
+    bottom: 0;
+  }
 
+  
 
 .menu{
   position: absolute;
@@ -245,12 +374,7 @@ body {
   filter: blur(160px);
   transform: rotate(12.08deg);
 }
-.closed{
-  position: absolute;
-  top: 0;
-  right: 0;
-  cursor: pointer;
-}
+
 .menu_inner-item{
   margin-bottom: 20px;
   cursor: pointer;
@@ -262,13 +386,7 @@ body {
   transition: transform .5s ease-in-out;
   transform: translateX(102vw);
 }
-.show_menu{
-  position: absolute;
-  top: 0;
-  right: 0;
-  cursor: pointer;
-  z-index: 31;
-}
+
 
 .line{
   position: absolute;
@@ -320,15 +438,64 @@ opacity: 0;
 transition: opacity .5s ease-in-out;
 }
 
+.saveWord{
+  position: relative;
+  width: 320px;
+  height: 280px;
+  box-sizing: border-box;
+  padding: 40px 20px 20px;
+  border-radius: 10px;
+  box-shadow: 10px 8px 15px rgb(0 0 0 / 68%);
+  background: #DCB8B2;
+  margin: 20px;
+  background: linear-gradient(135deg, rgb(126, 71, 204) 25%, rgb(2, 152, 254) 100%);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+.saveWord_translate{
+  font-size: 1.5rem;
+  color: #fff;
+  font-style: italic;
+}
+.saveWord_english {
+  font-size: 2.2rem;
+  color: #fff;
+  font-weight: 800;
+  text-transform: uppercase;
+  font-style: normal;
+}
+.playThis{
+  border: none;
+  padding: 10px 0;
+  border-radius: 8px;
+  font-size: 20px;
+  background: linear-gradient(200deg, rgb(180 126 255) 25%, rgb(2, 152, 254) 100%);
+  color: #fff;
+  font-weight: 700;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
 /* Game */
 
 .option{
   margin: 0 auto;
   transition: opacity .5s ease-in-out;
-}
-.option_inner{
   display: flex;
   flex-direction: column;
+  text-align: center;
+}
+.countWords{
+  display: flex;
+  margin: 0 auto;
+}
+.countWords input{
+  height: 40px;
+  border: none;
+  text-align:center;
+  font-size: 16px;
 }
 input[type="number"] {
 	-moz-appearance: textfield;
@@ -340,6 +507,44 @@ input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
 	display: none;
 }
+.decrement,
+.increment{
+  padding: 0 20px;
+  border: none;
+  cursor: pointer;
+}
+.decrement,
+.increment{
+  padding: 0 20px;
+  border: none;
+}
+.decrement{
+  border-radius: 8px 0 0 8px;
+}
+.increment{
+  border-radius: 0 8px 8px 0;
+}
+.option h2{
+  font-size: 3rem;
+}
+.option p {
+  font-size: 2.5rem;
+  margin-top: 20px;
+}
+.option_inner{
+  display: flex;
+  flex-direction: column;
+  font-size: 24px;
+  margin: 0 auto;
+}
+.startThisGame{
+  margin-top: 20px;
+  padding: 5px 0;
+  border-radius: 4px;
+  font-size: 24px;
+  border: none;
+}
+
 
 .cardForGame{
   display: flex;
@@ -361,4 +566,9 @@ input[type="number"]::-webkit-inner-spin-button {
   width: 20px;
   height: 20px;
   opacity: 0;
+}
+.rightAnswer{
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .1s ease-in-out;
 }

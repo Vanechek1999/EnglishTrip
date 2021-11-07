@@ -34,4 +34,16 @@
             };{
                 "english": "battle",
                 "russian": "битва"
+            };{
+                "english": "small",
+                "russian": "маленький"
+            };{
+                "english": "thousand",
+                "russian": "тысяча"
+            };{
+                "english": "this",
+                "russian": "этот, эта, это"
+            };{
+                "english": "outside",
+                "russian": "снаружи"
             };
