@@ -17,15 +17,21 @@ getData().then(allWordsInBase=>{
 function sayWord(word){
     responsiveVoice.speak(word);
 }
-
-
+// Необходимые переменные
+const allCardContent =  document.querySelector('.allCards'),
+      closedMenu = document.querySelector('.closed'),
+      showMenu   = document.querySelector('.show_menu'),
+      menu       = document.querySelector('.menu'),
+      allTrigger = document.querySelectorAll('.menu_inner-item')
 
 // Получение всех карторчек
 function getAllElements(startValue,endValue){
     menu.classList.add('menuClosed')
     showMenu.classList.remove('clicked')
-    document.querySelector('.allCards').style.background = '';
-    document.querySelector('.allCards').innerHTML = '';
+    allCardContent.classList.remove('show_Cards');
+    document.querySelector('.line').style.display = 'none';
+    allCardContent.style.background = '';
+    allCardContent.innerHTML = '';
     for(let i = startValue; i<endValue; i++){
         for(let y = 0; y< yourSaveWords.length; y++){
         }
@@ -151,10 +157,6 @@ function checkRightAnswer(){
 
 //Menu
 
-const closedMenu = document.querySelector('.closed');
-const showMenu   = document.querySelector('.show_menu');
-const menu       = document.querySelector('.menu');
-const allTrigger = document.querySelectorAll('.menu_inner-item')
 showMenu.addEventListener('click', ()=>{
     if(menu.classList.contains('menuClosed')){
         menu.classList.remove('menuClosed');
@@ -166,9 +168,10 @@ showMenu.addEventListener('click', ()=>{
 })
 
 function homePage(){
-    document.querySelector('.allCards').innerHTML = '';
-    document.querySelector('.allCards').style.background = '';
-    document.querySelector('.allCards').classList.remove('show_Cards')
+    allCardContent.innerHTML = '';
+    allCardContent.style.background = '';
+    document.querySelector('.line').style.display = '';
+    allCardContent.classList.remove('show_Cards')
     showMenu.classList.remove('clicked')
     menu.classList.add('menuClosed');
 }
@@ -256,8 +259,10 @@ function writeFile(englishWord, translate) {
 function getYourWords(){
     menu.classList.add('menuClosed')
     showMenu.classList.remove('clicked')
-    document.querySelector('.allCards').innerHTML = '';
-    document.querySelector('.allCards').style.background = 'linear-gradient(-25deg, #616161 0%, #96B7C4 100%)';
+    document.querySelector('.line').style.display = 'none';
+    allCardContent.classList.remove('show_Cards')
+    allCardContent.innerHTML = '';
+    allCardContent.style.background = 'linear-gradient(-25deg, #616161 0%, #96B7C4 100%)';
     fetch('./yourWords.txt')
     .then((response)=>{
         return response.text()
@@ -266,9 +271,6 @@ function getYourWords(){
         data = data.replace(/\s/g, '');
         data = data.split(/\s*;\s*/);
         let yourWords = JSON.parse(JSON.stringify(data));
-        if(document.querySelectorAll('.flipper').length !== 0){
-            document.querySelector('.allCards').innerHTML = '';
-        }
         for(let i = 0; i<yourWords.length; i++){
             let a = eval('({obj:[' + yourWords[i] + ']})')
             if(yourWords[i].length !== 0){
@@ -312,10 +314,11 @@ class SaveWords{
 
 function drawGame(){
     menu.classList.add('menuClosed');
-    showMenu.classList.remove('clicked')
-    document.querySelector('.allCards').style.background = '';
-    document.querySelector('.allCards').classList.add('show_Cards')
-    document.querySelector('.allCards').innerHTML=`
+    showMenu.classList.remove('clicked');
+    document.querySelector('.line').style.display = 'none';
+    allCardContent.style.background = '';
+    allCardContent.classList.add('show_Cards')
+    allCardContent.innerHTML=`
     <div class="option">
     <h2>Добро пожаловать в игру</h2>
     <p>Выберите параметры игры</p>
@@ -396,11 +399,11 @@ function startGame(countOfWords, level){
             if (x<0){
                 clearTimeout(timer);
                 setTimeout(()=>{
-                    document.querySelector('.allCards').innerHTML= `
+                    allCardContent.innerHTML= `
                     <p>Вы ответили на ${(counter/(interval-countOptionWords))*100}% из 100%</p>
                     <button class="closeGame">На главную</button>
                     `;
-                    document.querySelector('.allCards').style.cssText = `
+                    allCardContent.style.cssText = `
                         flex-direction: column;
                         margin: 0 auto;
                         align-items: center;
@@ -488,8 +491,8 @@ function startGame(countOfWords, level){
 }
 function closeGame(){
     document.querySelector('.closeGame').addEventListener('click', function(){
-        document.querySelector('.allCards').innerText=''
-        document.querySelector('.allCards').classList.remove('show_Cards')
+        allCardContent.innerText=''
+        allCardContent.classList.remove('show_Cards')
     })
 }
 // Шаблон карточек для игры
