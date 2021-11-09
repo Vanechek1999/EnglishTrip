@@ -189,7 +189,7 @@ allTrigger.forEach(trigger=>{
                     const allBtn = document.querySelectorAll('.playThis');
                     allBtn.forEach(btn=>{
                         btn.addEventListener('click', function(){
-                            sayWord(this.previousElementSibling.innerText)
+                            sayWord(this.parentNode.querySelector('.saveWord_english').innerText)
                         })
                     })
                 },50)
@@ -254,7 +254,6 @@ function writeFile(englishWord, translate) {
 function getYourWords(){
     menu.classList.add('menuClosed')
     showMenu.classList.remove('clicked')
-    document.querySelector('.line').style.display = 'none';
     allCardContent.classList.remove('show_Cards')
     allCardContent.innerHTML = '';
     allCardContent.style.background = 'linear-gradient(-25deg, #616161 0%, #96B7C4 100%)';
@@ -272,6 +271,7 @@ function getYourWords(){
                 if(showYourWords){
                     let rend = new SaveWords(a.obj[0].english, a.obj[0].russian, '.allCards')
                     rend.render()
+                    document.querySelector('.line').style.display = 'none';
                 }else{
                     yourSaveWords.push(a.obj[0]);
                 }
@@ -295,8 +295,8 @@ class SaveWords{
         word.classList.add('saveWord');
         word.innerHTML = `
             <p class="saveWord_english">${this.original}</p>
-            <button class="playThis">Play</button>
             <p class="saveWord_translate">${this.translate}</p>
+            <button class="playThis"><img src="./img/play.png"></button>
         `;
         this.parent.append(word)
     }
@@ -329,15 +329,11 @@ function drawGame(){
         </div>
     </div>
     `;
-    document.querySelector('.option_inner select').addEventListener('change', function(){
-        console.log(this.value);
-    })
+
     const decrement = document.querySelector('.decrement'),
           increment = document.querySelector('.increment');
     decrement.addEventListener('click', function(){
-        console.log(this.nextElementSibling);
         if(this.nextElementSibling.value >2){
-            
             this.nextElementSibling.value--
         }else{
             return
@@ -371,6 +367,16 @@ function clearOption(){
 }
 
 function startGame(countOfWords, level){
+    const arr = [];
+    function getYourAnswers(answer, translate, right){
+        obj = {
+            yourAnswer:answer,
+            rightAnswer: translate,
+            trueOrfalse: right
+        }
+        arr.push(obj)
+    }
+
     clearOption()
     let countOptionWords = Math.floor(Math.random() * allWordsInBase.length) -countOfWords < 0 ? 0 : Math.floor(Math.random() * allWordsInBase.length)- countOfWords,
         interval         = countOptionWords + countOfWords;
@@ -382,15 +388,16 @@ function startGame(countOfWords, level){
         const nextCard = document.querySelectorAll('.nextCard');
         // Таймер
         let timer;
-       
         let x =countOfWords * level;
-        
+
         countdown(); 
         function countdown(){ 
-            document.querySelectorAll('.timer').forEach(item=>{
-                item.innerHTML = `Осталось времени ${x}сек`;
-            })
             x--;
+            seconds = x%60;
+            minutes = x/60%60
+            document.querySelectorAll('.timer').forEach(item=>{
+                item.innerHTML = `Осталось времени ${Math.trunc(minutes)}мин ${seconds}сек`;
+            })
             if (x<0){
                 clearTimeout(timer);
                 setTimeout(()=>{
@@ -417,30 +424,28 @@ function startGame(countOfWords, level){
                 let find = this.parentNode;
                 let check = find.querySelector('.checkTrueOrFalse');
                 let rightAnswer = find.querySelector('.rightAnswer');
+                function checkAnswer(checkBG, rightOpacity, checkOpacity){
+                    check.style.background = checkBG
+                    rightAnswer.style.opacity = rightOpacity
+                    setTimeout(()=>{
+                        check.style.opacity = checkOpacity;
+                    }, 100)
+                }
                 if(this.innerText !== 'Закончить тестирование'){
-
                     if(find.querySelector('input[type="text"]').value.length !==0){
                         if(rightAnswer.innerText.indexOf(find.querySelector('input[type="text"]').value) !== -1){
                             counter++;
-                            check.style.background = ''
-                            rightAnswer.style.opacity = '1'
-                            setTimeout(()=>{
-                                check.style.opacity = '1';
-                            }, 100)
+                            getYourAnswers(find.querySelector('input[type="text"]').value,rightAnswer.innerText,true)
+                            checkAnswer('','1','1')
                         }else{
-                            check.style.background = 'url(./img/false.png) no-repeat center'
-                            rightAnswer.style.opacity = '1'
-                            setTimeout(()=>{
-                                check.style.opacity = '1';
-                            }, 100)
+                            getYourAnswers(find.querySelector('input[type="text"]').value,rightAnswer.innerText,false)
+                            checkAnswer('url(./img/false.png) no-repeat center','1','1')
                         }
                         --countOfCards;
-                        console.log(countOfCards);
                         if(countOfCards <= 1){
-                           
                             find.previousElementSibling.querySelector('.nextCard').innerText="Закончить тестирование"
                             setTimeout(()=>{
-                                find.style.left="200%"   
+                                find.style.left="200%"
                             }, 500)
                             
                         }else{
@@ -454,22 +459,19 @@ function startGame(countOfWords, level){
                 }else{
                     if(rightAnswer.innerText.indexOf(find.querySelector('input[type="text"]').value) !== -1){
                         counter++;
-                        check.style.background = ''
-                        setTimeout(()=>{
-                            check.style.opacity = '1';
-                        }, 100)
+                        getYourAnswers(find.querySelector('input[type="text"]').value,rightAnswer.innerText,true);
+                        checkAnswer('','1','1')
                     }else{
-                        check.style.background = 'url(./img/false.png) no-repeat center'
-                        setTimeout(()=>{
-                            check.style.opacity = '1';
-                        }, 100)
+                        getYourAnswers(find.querySelector('input[type="text"]').value,rightAnswer.innerText,false);
+                        checkAnswer('url(./img/false.png) no-repeat center','1','1')
                     }
+                    clearTimeout(timer);
                     setTimeout(()=>{
-                        clearTimeout(timer);
                         find.innerHTML= `
-                        <p>Вы ответили на ${(counter/(interval-countOptionWords))*100}% из 100%</p>
+                        <p>Вы ответили на ${((counter/(interval-countOptionWords))*100).toFixed(2)}% из 100%</p>
                         <button class="closeGame">На главную</button>
                         `;
+                        console.log(arr);
                         closeGame()
                     }, 500)
 

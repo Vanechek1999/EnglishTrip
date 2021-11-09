@@ -35,8 +35,8 @@ body {
 body .line {
   position: absolute;
   pointer-events: none;
-  top: 0;
-  right: 0px;
+  top: -5rem;
+  right: -5rem;
   z-index: 1;
   stroke-dasharray: 5000;
   stroke-dashoffset: 5000;
@@ -453,6 +453,7 @@ transition: opacity .5s ease-in-out;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
+  align-items: center;
 }
 .saveWord_translate{
   font-size: 1.5rem;
@@ -471,11 +472,11 @@ transition: opacity .5s ease-in-out;
   padding: 10px 0;
   border-radius: 8px;
   font-size: 20px;
-  background: linear-gradient(200deg, rgb(180 126 255) 25%, rgb(2, 152, 254) 100%);
-  color: #fff;
   font-weight: 700;
   text-transform: uppercase;
   cursor: pointer;
+  min-width: 100px;
+  background: #fff;
 }
 
 /* Game */
