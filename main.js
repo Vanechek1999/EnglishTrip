@@ -59,7 +59,7 @@ function getAllElements(startValue,endValue){
                     getData()
                 },50)
             }else{
-                this.parentNode.parentNode.style.cssText = `
+                this.parentNode.parentNode.parentNode.style.cssText = `
                 -webkit-transform: rotateY(0deg);
                 -moz-transform: rotateY(0deg);
                 -ms-transform: rotateY(0deg);
@@ -73,7 +73,6 @@ function getAllElements(startValue,endValue){
 
 function checkWords(){
     let allCards = document.querySelectorAll('.allCards .container');
-    console.log(yourSaveWords);
     for(let i = 0; i < allCards.length; i++){
         for(let y = 0; y < yourSaveWords.length; y++){
             if(yourSaveWords[y].english === allCards[i].querySelector('.word').innerText){
@@ -248,10 +247,6 @@ function writeFile(englishWord, translate) {
                 "russian": "${translate}"
             };`,
         },
-        success: function(response) {
-            console.log(this.data);
-            $("#ajax-area").html(response);
-        }
     });
 };
 

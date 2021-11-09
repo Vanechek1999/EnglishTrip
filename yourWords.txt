@@ -46,4 +46,7 @@
             };{
                 "english": "outside",
                 "russian": "снаружи"
+            };{
+                "english": "year",
+                "russian": "год"
             };
