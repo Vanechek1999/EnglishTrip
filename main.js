@@ -33,8 +33,6 @@ function getAllElements(startValue,endValue){
     allCardContent.style.background = '';
     allCardContent.innerHTML = '';
     for(let i = startValue; i<endValue; i++){
-        for(let y = 0; y< yourSaveWords.length; y++){
-        }
         let rend = new Card(allWordsInBase[i].english, allWordsInBase[i].russian, '.allCards')
         rend.render()
     }
@@ -375,6 +373,46 @@ function startGame(countOfWords, level){
             trueOrfalse: right
         }
         arr.push(obj)
+    };
+    function getResultGame(yourPoints, emptyArr){
+        setTimeout(()=>{
+            let resArr = []
+            arr.filter(function(item){
+                var i = resArr.findIndex(x => (x.yourAnswer == item.yourAnswer && x.rightAnswer == item.rightAnswer && x.trueOrfalse == item.trueOrfalse));
+                if(i <= -1){
+                      resArr.push(item);
+                }
+                return null;
+              });
+              allCardContent.innerHTML = '';
+              allCardContent.style.cssText = `
+              flex-direction: column;
+              margin: 0 auto;
+              align-items: center;
+          `
+              allCardContent.innerHTML= `
+              <div class="result">
+                <p>Вы ответили на ${yourPoints}% из 100%</p>
+                <div class="allYourAnswers"></div>
+                <button class="closeGame">На главную</button>
+              </div>
+              `;
+              console.log(resArr.length);
+              if(resArr.length > 0){
+                for(let i = 0; i < resArr.length; i++){
+                    let rend = new cardForResult(i+1 ,resArr[i].yourAnswer, resArr[i].rightAnswer, resArr[i].trueOrfalse ?'./img/right.png': './img/false.png', '.allYourAnswers')
+                    rend.render()
+                }
+              }else{
+                for(let y = 0; y < emptyArr.length; y++){
+                    let rend = new cardForResult(y+1 , 'Вы не ответили', emptyArr[y].querySelector('.englishWord').innerText, './img/false.png', '.allYourAnswers')
+                    rend.render()
+                }
+              }
+
+
+            closeGame()
+        }, 500)
     }
 
     clearOption()
@@ -383,9 +421,15 @@ function startGame(countOfWords, level){
 
     for(let i= countOptionWords; i< interval; i++){
         let countOfCards = interval-countOptionWords;
-        rend = new CardForGame(allWordsInBase[i].english, allWordsInBase[i].russian, '.allCards');
+        rend = new CardForGame(0,countOfCards ,allWordsInBase[i].english, allWordsInBase[i].russian, '.allCards');
         rend.render()
-        const nextCard = document.querySelectorAll('.nextCard');
+        const nextCard = document.querySelectorAll('.nextCard'),
+              arrOfCardGame =  document.querySelectorAll('.cardForGame');
+        let allCardForGame = document.querySelectorAll('.cardForGame .numberOfCard');
+        for(let y = 0; y < allCardForGame.length; y++){
+
+            allCardForGame[y].innerHTML = Math.abs(y-allCardForGame.length);
+        }
         // Таймер
         let timer;
         let x =countOfWords * level;
@@ -398,20 +442,9 @@ function startGame(countOfWords, level){
             document.querySelectorAll('.timer').forEach(item=>{
                 item.innerHTML = `Осталось времени ${Math.trunc(minutes)}мин ${seconds}сек`;
             })
-            if (x<0){
+            if (x<=0){
                 clearTimeout(timer);
-                setTimeout(()=>{
-                    allCardContent.innerHTML= `
-                    <p>Вы ответили на ${(counter/(interval-countOptionWords))*100}% из 100%</p>
-                    <button class="closeGame">На главную</button>
-                    `;
-                    allCardContent.style.cssText = `
-                        flex-direction: column;
-                        margin: 0 auto;
-                        align-items: center;
-                    `
-                    closeGame()
-                }, 500)
+                getResultGame(((counter/(interval-countOptionWords))*100).toFixed(2), arrOfCardGame)
             }
             else {
                 timer = setTimeout(countdown, 1000);
@@ -423,7 +456,7 @@ function startGame(countOfWords, level){
             next.addEventListener('click', function(){
                 let find = this.parentNode;
                 let check = find.querySelector('.checkTrueOrFalse');
-                let rightAnswer = find.querySelector('.rightAnswer');
+                let rightAnswer = find.querySelector('.englishWord');
                 function checkAnswer(checkBG, rightOpacity, checkOpacity){
                     check.style.background = checkBG
                     rightAnswer.style.opacity = rightOpacity
@@ -466,14 +499,7 @@ function startGame(countOfWords, level){
                         checkAnswer('url(./img/false.png) no-repeat center','1','1')
                     }
                     clearTimeout(timer);
-                    setTimeout(()=>{
-                        find.innerHTML= `
-                        <p>Вы ответили на ${((counter/(interval-countOptionWords))*100).toFixed(2)}% из 100%</p>
-                        <button class="closeGame">На главную</button>
-                        `;
-                        console.log(arr);
-                        closeGame()
-                    }, 500)
+                    getResultGame(((counter/(interval-countOptionWords))*100).toFixed(2))
 
                 }
 
@@ -488,23 +514,31 @@ function startGame(countOfWords, level){
 }
 function closeGame(){
     document.querySelector('.closeGame').addEventListener('click', function(){
+        allCardContent.style.cssText = `
+        flex-direction: ;
+        margin: ;
+        align-items: ;
+    `
         allCardContent.innerText=''
         allCardContent.classList.remove('show_Cards')
     })
 }
 // Шаблон карточек для игры
 class CardForGame{
-    constructor(cardEnglish, cardRussian, parent){
-        this.cardEnglish = cardEnglish;
-        this.cardRussian = cardRussian;
-        this.parent      =  document.querySelector(parent);
+    constructor(countOfCards, allCards, cardEnglish, cardRussian, parent){
+        this.countOfCards = countOfCards;
+        this.allCards     = allCards;
+        this.cardEnglish  = cardEnglish;
+        this.cardRussian  = cardRussian;
+        this.parent       =  document.querySelector(parent);
     }
     render(){
         const game = document.createElement('div');
         game.classList.add('cardForGame');
         game.innerHTML = `
         <p class="timer"></p>
-        <h2>${this.cardEnglish}</h2>
+        <p class="countOfCard">Карта №<span class="numberOfCard"></span>/${this.allCards}</p>
+        <h2 class="englishWord">${this.cardEnglish}</h2>
         <input type="text" placeholder="Ваш ответ">
         <h2  class="rightAnswer">${this.cardRussian}</h2>
         <div class="checkTrueOrFalse"></div>
@@ -513,4 +547,120 @@ class CardForGame{
         this.parent.append(game)
     }
 }
+
+class cardForResult{
+    constructor(count, yourAnswer, rightAnswer, trueOrfalse, parent){
+        this.count       = count
+        this.yourAnswer  = yourAnswer;
+        this.rightAnswer = rightAnswer;
+        this.trueOrfalse = trueOrfalse
+        this.parent      = document.querySelector(parent)
+    }
+    render(){
+        const answers = document.createElement('div');
+        answers.classList.add('yourAnswer');
+        answers.innerHTML = `
+            <p class="countAnswer">${this.count}</p>
+            <p class="asnswer">${this.yourAnswer}</p>
+            <p class="yourRightAnswer">${this.rightAnswer}</p>
+            <div><img src=${this.trueOrfalse}></div>
+            
+        `;
+        this.parent.append(answers)
+    }
+}
 // Game
+
+
+// homePage
+function animateHomePage(){
+    const startValue = Math.floor(Math.random() * allWordsInBase.length) -3 < 0 ? 0 : Math.floor(Math.random() * allWordsInBase.length)- 3,
+          stopValue  = startValue+3;
+    for(let i = startValue; i < stopValue; i++){
+        let rend = new CardForHomePage(allWordsInBase[i].english, allWordsInBase[i].russian, '.showFunction');
+        rend.render()
+    }
+    showCard()
+}
+function showCard(){
+  const allCards =  document.querySelectorAll('.cardHome');
+  let counter = 0;
+  let animateCards = setInterval(()=>{
+    if(counter >= 3){
+        clearInterval(animateCards)
+    }else{
+        let wrapper = allCards[counter].querySelector(".font_answer");
+        let text = wrapper.querySelector("p");
+        let textCont = text.textContent;
+        text.style.display = "none";
+        allCards[counter].classList.add('showCard') 
+        function animateText(){
+            for (let y = 0; y < textCont.length; y++) {
+                (function(y) {
+                  setTimeout(function() {
+                    let texts = document.createTextNode(textCont[y])
+                    let span = document.createElement('span');
+                    span.appendChild(texts);
+                    span.classList.add("wave");
+                    wrapper.appendChild(span);
+              
+                  }, 75 * y);
+                }(y));
+            }
+            setTimeout(clickBtn, 600)
+        }
+
+        function clickBtn(){
+            allCards[counter].querySelector('.font_button').classList.add('font_button-click');
+            setTimeout(rotateCard, 200)
+        }
+        function rotateCard(){
+                allCards[counter].style.cssText = `
+                -webkit-transform: rotateY(180deg);
+                -moz-transform: rotateY(180deg);
+                -ms-transform: rotateY(180deg);
+                transform: rotateY(180deg);
+            `;
+            counter++;
+            console.log(counter);
+        }
+        setTimeout(animateText, 1000)
+    }
+  }, 2000)
+}
+setTimeout(()=>{
+    animateHomePage()
+},500)
+
+
+class CardForHomePage{
+    constructor(english, russian, parent){
+        this.russian = russian;
+        this.english = english;
+        this.parent  = document.querySelector(parent);
+    };
+    render(){
+        const cardHome = document.createElement('div');
+        cardHome.classList.add('cardHome');
+        cardHome.classList.add('hide_card');
+        cardHome.innerHTML = `
+            <div class="cardHome_inner">
+                <div class="cardHome_inner-font">
+                    <div class="font_title">${this.russian}</div>
+                    <div class="font_answer"><p>${this.english}</p></div>
+                    <button class="font_button">Проверить ответ</button>
+                </div>
+                <div class="cardHome_inner-back">
+                    <div class="back_rightAnswer">${this.english}</div>
+                    <div class="back_right">
+                        <span class="back_right-text">Это правильный ответ</span>
+                        <div class="back_right-img"></div>
+                    </div>
+
+                </div>
+            </div>
+        `;
+        this.parent.append(cardHome)
+    }
+}
+// homePage

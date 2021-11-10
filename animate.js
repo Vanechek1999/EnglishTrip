@@ -160,11 +160,6 @@ function Text(options) {
     var gradient = buffer.createLinearGradient(20,0, window.innerWidth/2,0);
     gradient.addColorStop(0.5, '#3C82F4');
     gradient.addColorStop(1, '#FF437E');
-    // Другой вариант расцветки
-    // gradient.addColorStop(0, '#e25822');
-    // gradient.addColorStop(.3, '#22e258');
-    // gradient.addColorStop(.6, '#22ace2');
-    // gradient.addColorStop(1, '#e222ac');
     pool.width = w;
     buffer.fillStyle = '#000000';
     buffer.fillRect(0, 0, pool.width, pool.height);
@@ -178,7 +173,7 @@ function Text(options) {
     this.bound = buffer.measureText(this.copy);
     this.bound.height = this.size * 1.5;
     this.x = options.x || w * 0.5 - this.bound.width * 0.5; //Положение по X
-    this.y = options.y || h * 0.3 - this.size * 0.3;//Положение по Y
+    this.y = options.y || h * 0.25 - this.size * 0.25;//Положение по Y
   
     buffer.strokeStyle = this.color;
     buffer.strokeText(this.copy, 0, this.bound.height * 0.8);
