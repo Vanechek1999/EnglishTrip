@@ -17,6 +17,11 @@ getData().then(allWordsInBase=>{
 function sayWord(word){
     responsiveVoice.speak(word);
 }
+function clearHomePage(param){
+    document.querySelector('.showFunction').style.display = param
+    document.querySelector('.line_home').style.display = param
+    document.querySelector('.line').style.display = param
+}
 // Необходимые переменные
 const allCardContent =  document.querySelector('.allCards'),
       closedMenu = document.querySelector('.closed'),
@@ -67,6 +72,7 @@ function getAllElements(startValue,endValue){
         })
     })
     checkWords()
+    clearHomePage('none')
 }
 
 function checkWords(){
@@ -74,7 +80,7 @@ function checkWords(){
     for(let i = 0; i < allCards.length; i++){
         for(let y = 0; y < yourSaveWords.length; y++){
             if(yourSaveWords[y].english === allCards[i].querySelector('.word').innerText){
-                allCards[i].querySelector('.front').style.background = 'linear-gradient(20deg, #B571FF 17%, #1301FF 84%)'
+                allCards[i].querySelector('.front').style.background = 'linear-gradient(20deg, rgb(181, 113, 255) 17%, transparent 84%)'
                 allCards[i].classList.add('knowthisWord')
             }
         }
@@ -171,6 +177,7 @@ function homePage(){
     allCardContent.classList.remove('show_Cards')
     showMenu.classList.remove('clicked')
     menu.classList.add('menuClosed');
+    clearHomePage('')
 }
 let showYourWords = false
 allTrigger.forEach(trigger=>{
@@ -254,7 +261,7 @@ function getYourWords(){
     showMenu.classList.remove('clicked')
     allCardContent.classList.remove('show_Cards')
     allCardContent.innerHTML = '';
-    allCardContent.style.background = 'linear-gradient(-25deg, #616161 0%, #96B7C4 100%)';
+    // allCardContent.style.background = 'linear-gradient(-25deg, #616161 0%, #96B7C4 100%)';
     fetch('./yourWords.txt')
     .then((response)=>{
         return response.text()
@@ -269,7 +276,7 @@ function getYourWords(){
                 if(showYourWords){
                     let rend = new SaveWords(a.obj[0].english, a.obj[0].russian, '.allCards')
                     rend.render()
-                    document.querySelector('.line').style.display = 'none';
+                    clearHomePage('none')
                 }else{
                     yourSaveWords.push(a.obj[0]);
                 }
@@ -330,6 +337,7 @@ function drawGame(){
 
     const decrement = document.querySelector('.decrement'),
           increment = document.querySelector('.increment');
+          inputNumber = document.querySelector('.countWords input')
     decrement.addEventListener('click', function(){
         if(this.nextElementSibling.value >2){
             this.nextElementSibling.value--
@@ -337,6 +345,13 @@ function drawGame(){
             return
         }
         
+    })
+    inputNumber.addEventListener('change', function(){
+        if(this.value > 100){
+            this.value = 100
+        }else if(this.value < 2){
+            this.value = 2
+        }
     })
     increment.addEventListener('click', function(){
         if(this.previousElementSibling.value <500){
@@ -346,6 +361,7 @@ function drawGame(){
         }
         
     })
+
     document.querySelector('.startThisGame').addEventListener('click', ()=>{
         if(+document.querySelector('.option_inner input[type="number"]').value.length !== 0 && +document.querySelector('.option_inner input[type="number"]').value >= 2){
             startGame(+document.querySelector('.option_inner input[type="number"]').value, +document.querySelector('.option_inner select').value)
@@ -354,6 +370,7 @@ function drawGame(){
         }
         
     })
+    clearHomePage('none')
 }
 
 function clearOption(){
@@ -397,7 +414,6 @@ function startGame(countOfWords, level){
                 <button class="closeGame">На главную</button>
               </div>
               `;
-              console.log(resArr.length);
               if(resArr.length > 0){
                 for(let i = 0; i < resArr.length; i++){
                     let rend = new cardForResult(i+1 ,resArr[i].yourAnswer, resArr[i].rightAnswer, resArr[i].trueOrfalse ?'./img/right.png': './img/false.png', '.allYourAnswers')
@@ -416,9 +432,15 @@ function startGame(countOfWords, level){
     }
 
     clearOption()
-    let countOptionWords = Math.floor(Math.random() * allWordsInBase.length) -countOfWords < 0 ? 0 : Math.floor(Math.random() * allWordsInBase.length)- countOfWords,
-        interval         = countOptionWords + countOfWords;
-
+    let countOptionWords;
+    if(Math.floor(Math.random() * allWordsInBase.length) -countOfWords < 0){
+        countOptionWords = 0
+    }else if(Math.floor(Math.random() * allWordsInBase.length) -countOfWords > 1000){
+        countOptionWords = 1000 - (Math.floor(Math.random() * allWordsInBase.length) -countOfWords)
+    }else{
+        countOptionWords = Math.floor(Math.random() * allWordsInBase.length)- countOfWords;
+    }
+    let interval = countOptionWords + countOfWords;
     for(let i= countOptionWords; i< interval; i++){
         let countOfCards = interval-countOptionWords;
         rend = new CardForGame(0,countOfCards ,allWordsInBase[i].english, allWordsInBase[i].russian, '.allCards');
@@ -426,6 +448,7 @@ function startGame(countOfWords, level){
         const nextCard = document.querySelectorAll('.nextCard'),
               arrOfCardGame =  document.querySelectorAll('.cardForGame');
         let allCardForGame = document.querySelectorAll('.cardForGame .numberOfCard');
+        
         for(let y = 0; y < allCardForGame.length; y++){
 
             allCardForGame[y].innerHTML = Math.abs(y-allCardForGame.length);
@@ -456,7 +479,7 @@ function startGame(countOfWords, level){
             next.addEventListener('click', function(){
                 let find = this.parentNode;
                 let check = find.querySelector('.checkTrueOrFalse');
-                let rightAnswer = find.querySelector('.englishWord');
+                let rightAnswer = find.querySelector('.rightAnswer');
                 function checkAnswer(checkBG, rightOpacity, checkOpacity){
                     check.style.background = checkBG
                     rightAnswer.style.opacity = rightOpacity
@@ -464,9 +487,9 @@ function startGame(countOfWords, level){
                         check.style.opacity = checkOpacity;
                     }, 100)
                 }
-                if(this.innerText !== 'Закончить тестирование'){
+                if(this.innerText.toLowerCase() !== 'закончить тестирование'){
                     if(find.querySelector('input[type="text"]').value.length !==0){
-                        if(rightAnswer.innerText.indexOf(find.querySelector('input[type="text"]').value) !== -1){
+                        if(rightAnswer.innerText.indexOf(find.querySelector('input[type="text"]').value.toLowerCase()) !== -1){
                             counter++;
                             getYourAnswers(find.querySelector('input[type="text"]').value,rightAnswer.innerText,true)
                             checkAnswer('','1','1')
@@ -478,19 +501,22 @@ function startGame(countOfWords, level){
                         if(countOfCards <= 1){
                             find.previousElementSibling.querySelector('.nextCard').innerText="Закончить тестирование"
                             setTimeout(()=>{
-                                find.style.left="200%"
+                                find.previousElementSibling.style.left = "50%"
+                                find.style.setProperty("left", "200%", "important");
+                                
                             }, 500)
                             
                         }else{
                             setTimeout(()=>{
-                                find.style.left="200%"
+                                find.previousElementSibling.style.left = "50%"
+                                find.style.setProperty("left", "200%", "important");
                             }, 500)
                         }
                     }else{
                         return
                     }
                 }else{
-                    if(rightAnswer.innerText.indexOf(find.querySelector('input[type="text"]').value) !== -1){
+                    if(rightAnswer.innerText.indexOf(find.querySelector('input[type="text"]').value.toLowerCase()) !== -1){
                         counter++;
                         getYourAnswers(find.querySelector('input[type="text"]').value,rightAnswer.innerText,true);
                         checkAnswer('','1','1')
@@ -539,7 +565,10 @@ class CardForGame{
         <p class="timer"></p>
         <p class="countOfCard">Карта №<span class="numberOfCard"></span>/${this.allCards}</p>
         <h2 class="englishWord">${this.cardEnglish}</h2>
-        <input type="text" placeholder="Ваш ответ">
+        <span class="input">
+            <input type="text" placeholder="Write your answer">
+            <span></span>	
+	    </span>
         <h2  class="rightAnswer">${this.cardRussian}</h2>
         <div class="checkTrueOrFalse"></div>
         <button class="nextCard">Следующая карта</button>
@@ -622,7 +651,6 @@ function showCard(){
                 transform: rotateY(180deg);
             `;
             counter++;
-            console.log(counter);
         }
         setTimeout(animateText, 1000)
     }
@@ -651,6 +679,7 @@ class CardForHomePage{
                     <button class="font_button">Проверить ответ</button>
                 </div>
                 <div class="cardHome_inner-back">
+                    <div class="font_title">${this.russian}</div>
                     <div class="back_rightAnswer">${this.english}</div>
                     <div class="back_right">
                         <span class="back_right-text">Это правильный ответ</span>
