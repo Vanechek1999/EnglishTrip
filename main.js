@@ -36,6 +36,7 @@ function getAllElements(startValue,endValue){
     allCardContent.classList.remove('show_Cards');
     document.querySelector('.line').style.display = 'none';
     allCardContent.style.background = '';
+    allCardContent.style.justifyContent = '';
     allCardContent.innerHTML = '';
     for(let i = startValue; i<endValue; i++){
         let rend = new Card(allWordsInBase[i].english, allWordsInBase[i].russian, '.allCards')
@@ -55,6 +56,7 @@ function getAllElements(startValue,endValue){
     addWordOrRepeat.forEach(word => {
         word.addEventListener('click', function(){
             if(this.querySelector('span').innerText === 'Добавить в выученные слова'){
+                this.style.pointerEvents = 'none';
                 let englishWord = this.parentNode.parentNode.querySelector('.header .word').innerText,
                     russianWord = this.parentNode.querySelector('.russian').innerText
                 writeFile(englishWord,russianWord)
@@ -62,6 +64,7 @@ function getAllElements(startValue,endValue){
                     getData()
                 },50)
             }else{
+                this.parentNode.parentNode.querySelector('.writeYourAnswer').value = '';
                 this.parentNode.parentNode.parentNode.style.cssText = `
                 -webkit-transform: rotateY(0deg);
                 -moz-transform: rotateY(0deg);
@@ -133,6 +136,7 @@ function checkRightAnswer(){
     if(this.previousElementSibling.value.length !== 0){
         if(thisCard.querySelector('.russian').innerText.indexOf(this.previousElementSibling.value.toLowerCase()) !== -1){
             if(thisCard.classList.contains('knowthisWord')){
+                thisCard.querySelector('.addThisWord').style.pointerEvents = 'none'
                 thisCard.querySelector('.addThisWord span').innerHTML = 'Это слово уже добавлено';
             }else{
                 thisCard.querySelector('.addThisWord span').innerHTML = 'Добавить в выученные слова';
@@ -173,6 +177,7 @@ showMenu.addEventListener('click', ()=>{
 function homePage(){
     allCardContent.innerHTML = '';
     allCardContent.style.background = '';
+    allCardContent.style.minWidth = '';
     document.querySelector('.line').style.display = '';
     allCardContent.classList.remove('show_Cards')
     showMenu.classList.remove('clicked')
@@ -189,7 +194,8 @@ allTrigger.forEach(trigger=>{
             case 'showLearnWords':
                 showYourWords = true;
                 getYourWords()
-
+                allCardContent.style.minWidth = '100vw';
+                allCardContent.style.justifyContent = 'space-evenly';
                 setTimeout(()=>{
                     const allBtn = document.querySelectorAll('.playThis');
                     allBtn.forEach(btn=>{

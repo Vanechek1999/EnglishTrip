@@ -49,4 +49,7 @@
             };{
                 "english": "year",
                 "russian": "год"
+            };{
+                "english": "yet",
+                "russian": "ещё, всё ещё"
             };
